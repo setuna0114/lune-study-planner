@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111016">
+<title>LUNE — Study Planner</title>
+<style>
+:root{--bg:#111016;--panel:#1b1822;--panel2:#24202e;--line:#383142;--text:#f7f2ff;--muted:#b9afc8;--lav:#c8b5ff;--pink:#f3afcb;--green:#b8e6d0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#211a30 0%,var(--bg) 48%);color:var(--text);font-family:ui-rounded,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{max-width:560px;margin:auto;padding:22px 16px 100px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--lav);font-weight:800}.brand{font-size:30px;letter-spacing:.08em;font-weight:850;margin:2px 0}.tagline{color:var(--muted);font-size:12px}.moon{width:46px;height:46px;border-radius:16px;background:#2b2438;display:grid;place-items:center;font-size:24px;color:var(--lav)}
+.hero{border:1px solid #40354f;background:linear-gradient(135deg,#292137,#1c1924 72%);border-radius:23px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden}.hero:after{content:"☾";position:absolute;right:8px;top:-27px;font-size:120px;color:#ffffff08}.hero h1{font-size:22px;line-height:1.45;margin:8px 0}.hero p{font-size:13px;color:#d2c9df;line-height:1.7;margin:0 0 14px}.pill{display:inline-flex;padding:6px 10px;border-radius:99px;background:#392d4c;color:#dfd1ff;font-size:11px;font-weight:750}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px}.stat .label{font-size:11px;color:var(--muted)}.stat strong{display:block;font-size:24px;margin:5px 0}.stat small{font-size:11px;color:var(--muted)}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:23px 2px 12px}.section-head h2{font-size:16px;margin:0}.section-head span{font-size:11px;color:var(--muted)}
+.task-list{display:grid;gap:9px}.task{display:flex;align-items:center;gap:12px;background:#1b1822;border:1px solid var(--line);padding:13px;border-radius:16px}.check{width:25px;height:25px;border-radius:9px;border:1px solid #746389;background:#292333;flex:none;color:#17121f}.task.done{opacity:.66}.task.done .check{background:var(--lav);border-color:var(--lav)}.task.done .task-title{text-decoration:line-through}.task-main{min-width:0;flex:1}.task-title{font-size:13px;font-weight:750;overflow-wrap:anywhere}.task-meta{font-size:11px;color:var(--muted);margin-top:4px}.task-edit{border:0;background:transparent;color:var(--muted);font-size:18px;padding:5px}
+.primary,.secondary,.danger{border:0;border-radius:14px;padding:13px 15px;font-weight:800}.primary{background:linear-gradient(100deg,#c8b5ff,#f3afcb);color:#21182d}.secondary{background:#30283d;color:#e4d8ff;border:1px solid #514360}.danger{background:#40242f;color:#ffc3d8}.wide{width:100%;margin-top:12px}.tabs{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#15121beF;backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;justify-content:center;padding:10px max(12px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));gap:6px}.tabs button{flex:1;max-width:170px;border:0;background:transparent;color:#94899f;padding:8px 4px;border-radius:12px;font-size:11px}.tabs button.active{background:#30283d;color:var(--lav)}.tabs b{display:block;font-size:18px;margin-bottom:3px}
+.page{display:none}.page.active{display:block}.field{margin:14px 0}.field label{display:block;color:#d9d0e4;font-size:12px;font-weight:750;margin-bottom:7px}.field input,.field textarea,.field select{width:100%;border:1px solid #494052;background:#17141d;color:var(--text);border-radius:12px;padding:12px;outline:none}.field textarea{min-height:78px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--lav)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.range-row{display:flex;align-items:center;gap:10px}.range-row input{padding:0;accent-color:var(--lav)}.range-row strong{min-width:66px;text-align:right;color:var(--lav)}.hint{font-size:11px;color:var(--muted);line-height:1.65}.progress{height:7px;background:#393141;border-radius:99px;overflow:hidden;margin:10px 0}.progress div{height:100%;background:linear-gradient(90deg,var(--lav),var(--pink));width:0;transition:width .2s}.empty{padding:22px;text-align:center;border:1px dashed #51445f;border-radius:16px;color:var(--muted);font-size:13px;line-height:1.8}.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#d8caff;color:#21182d;padding:10px 16px;border-radius:99px;font-size:12px;font-weight:800;z-index:10;display:none;box-shadow:0 8px 25px #0005}
+footer{text-align:center;color:#766d82;font-size:10px;margin:30px 0 0}
+@media(min-width:600px){.app{padding-top:34px}.hero{padding:25px}.brand{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<main class="app">
+<header><div><div class="eyebrow">YOUR PERSONAL STUDY SPACE</div><div class="brand">LUNE <span style="color:var(--lav)">☾</span></div><div class="tagline">your goals, your pace.</div></div><div class="moon">✦</div></header>
+<section class="page active" id="home">
+<div class="hero"><span class="pill">A LITTLE, EVERY DAY</span><h1 id="greeting">自分のペースで、大丈夫。</h1><p id="heroText">完璧じゃなくていい。今日の一歩を、一緒に決めよう。</p><button class="primary" onclick="showPage('planner')">勉強プランをつくる　↗</button></div>
+<div class="stats"><div class="stat"><div class="label">今日のタスク</div><strong id="todayCount">0 / 0</strong><small>できた分だけ、えらい。</small></div><div class="stat"><div class="label">今日の勉強時間</div><strong id="todayTime">0<span style="font-size:13px"> 分</span></strong><small>記録した時間の合計</small></div></div>
+<div class="section-head"><h2>今日の勉強プラン</h2><span id="todayDate"></span></div><div class="progress"><div id="progressBar"></div></div><div class="task-list" id="todayTasks"></div>
+<button class="secondary wide" onclick="showPage('plan')">計画を確認・編集する</button>
+</section>
+<section class="page" id="planner">
+<div class="section-head"><h2>新しい学習プラン</h2><span>PLAN YOUR GOAL</span></div>
+<div class="card">
+<div class="field"><label for="subject">教科・資格</label><input id="subject" placeholder="例：英語、数学、簿記"></div>
+<div class="field"><label for="goal">達成したいこと</label><textarea id="goal" placeholder="例：英単語を100個覚える、テスト範囲を復習する"></textarea></div>
+<div class="two"><div class="field"><label for="deadline">目標までの日数</label><select id="deadline"><option value="3">3日間</option><option value="7" selected>7日間</option><option value="14">14日間</option><option value="30">30日間</option></select></div><div class="field"><label for="dailyMinutes">1日の勉強時間</label><select id="dailyMinutes"><option value="15">15分</option><option value="30">30分</option><option value="45">45分</option><option value="60" selected>1時間</option><option value="90">90分</option><option value="120">2時間</option><option value="180">3時間</option></select></div></div>
+<div class="field"><label for="available">予定や苦手なこと（任意）</label><input id="available" placeholder="例：水曜は忙しい、文法が苦手"></div>
+<p class="hint">入力した目標から、学習の流れを組み立てるよ。作成後に内容・日付・時間を自分で調整できます。</p>
+<button class="primary wide" onclick="generatePlan()">✦　自動でプランを作成</button>
+</div>
+<div class="section-head"><h2>自分でタスクを追加</h2><span>ADD TASK</span></div>
+<div class="card"><div class="field"><label for="manualTitle">やること</label><input id="manualTitle" placeholder="例：ワーク p.12〜15"></div><div class="two"><div class="field"><label for="manualDate">何日目にやる？</label><select id="manualDate"><option value="0">今日</option><option value="1">明日</option><option value="2">2日後</option><option value="3">3日後</option><option value="4">4日後</option><option value="5">5日後</option><option value="6">6日後</option></select></div><div class="field"><label for="manualTime">目安（分）</label><input id="manualTime" type="number" min="5" max="600" value="20"></div></div><button class="secondary wide" onclick="addManualTask()">＋ タスクを追加</button></div>
+</section>
+<section class="page" id="plan">
+<div class="section-head"><h2>マイ学習プラン</h2><span id="planSubtitle">MY PLAN</span></div><div class="card"><div class="pill" id="planSubject">まだプランがありません</div><h2 id="planGoal" style="font-size:18px;line-height:1.5">まずは目標を決めよう。</h2><div class="progress"><div id="planProgress"></div></div><div class="hint" id="planStats">プランを作ると、ここに進捗が表示されます。</div></div>
+<div class="section-head"><h2>予定一覧</h2><span>タップで完了</span></div><div id="allTasks" class="task-list"></div><button class="danger wide" onclick="clearPlan()">プランをリセット</button>
+</section>
+<section class="page" id="settings">
+<div class="section-head"><h2>設定</h2><span>YOUR SPACE</span></div><div class="card"><div class="field"><label for="nickname">呼んでほしい名前（任意）</label><input id="nickname" placeholder="例：せつな"></div><div class="field"><label for="accent">アクセントカラー</label><select id="accent"><option value="lavender">ラベンダー × ピンク</option><option value="pink">ピンク多め</option><option value="blue">ブルー × ラベンダー</option></select></div><button class="primary wide" onclick="saveSettings()">設定を保存</button><p class="hint">データはこのブラウザ内に保存されます。別の端末やブラウザとは自動同期されません。</p></div><div class="card" style="margin-top:12px"><h3 style="margin-top:0">LUNEについて</h3><p class="hint">今は試作版です。自動プラン作成は入力された目標をもとに、あらかじめ用意した学習ステップを組み合わせます。外部AIへの接続はまだ行っていません。</p></div>
+</section>
+<footer>MADE FOR YOUR LITTLE WINS ✦<br>まずは今日の一歩から。</footer>
+</main>
+<nav class="tabs"><button class="active" data-page="home" onclick="showPage('home')"><b>⌂</b>ホーム</button><button data-page="planner" onclick="showPage('planner')"><b>✧</b>プラン作成</button><button data-page="plan" onclick="showPage('plan')"><b>▤</b>予定一覧</button><button data-page="settings" onclick="showPage('settings')"><b>⚙</b>設定</button></nav>
+<script>
+const $=id=>document.getElementById(id);
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+let state=JSON.parse(localStorage.getItem('luneState')||'null')||{subject:'',goal:'',created:todayKey(),tasks:[],nickname:'',accent:'lavender'};
+function save(){localStorage.setItem('luneState',JSON.stringify(state));render()}
+function dateOffset(offset){const d=new Date();d.setDate(d.getDate()+offset);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===name));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));window.scrollTo({top:0,behavior:'smooth'});render()}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2100)}
+function generatePlan(){
+ const subject=$('subject').value.trim(),goal=$('goal').value.trim(),days=+$('deadline').value,mins=+$('dailyMinutes').value,available=$('available').value.trim();
+ if(!subject){toast('教科・資格を入力してね♡');$('subject').focus();return}
+ const steps=['基礎・全体像を確認','重要ポイントを整理する','基本問題に取り組む','苦手なところを重点復習','問題演習で理解度チェック','間違えた問題を解き直す','総復習と仕上げ'];
+ state.subject=subject;state.goal=goal||`${subject}の理解を深める`;state.created=todayKey();state.dailyMinutes=mins;state.tasks=[];
+ for(let i=0;i<days;i++){
+   const title=days<=3?['範囲を確認して基礎固め','問題演習と苦手の復習','総復習・理解度チェック'][i]:(i===0?`${subject}の範囲・基礎を確認`:i===days-1?`${subject}の総復習・仕上げ`:`${subject}：${steps[Math.min(5,Math.floor(i/(days-1)*5)+1)]}`);
+   state.tasks.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+i),title,subject,date:dateOffset(i),minutes:mins,done:false});
+ }
+ if(available)state.notes=available;
+ save();showPage('plan');toast('プランを作成したよ ✦');
+}
+function addManualTask(){
+ const title=$('manualTitle').value.trim(),minutes=Math.max(5,Math.min(600,Number($('manualTime').value)||20)),offset=+$('manualDate').value;
+ if(!title){toast('やることを入力してね');return}
+ state.tasks.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),title,subject:state.subject||'自由タスク',date:dateOffset(offset),minutes,done:false});
+ $('manualTitle').value='';save();toast('タスクを追加したよ♡');showPage('plan');
+}
+function toggleTask(id){const t=state.tasks.find(t=>t.id===id);if(t){t.done=!t.done;save()}}
+function editTask(id){
+ const t=state.tasks.find(t=>t.id===id);if(!t)return;
+ const title=prompt('タスク名を編集',t.title);if(title===null)return;if(!title.trim()){toast('タスク名は空にできないよ');return}
+ const mins=prompt('勉強時間（分）',t.minutes);if(mins===null)return;
+ const date=prompt('日付（YYYY-MM-DD）',t.date);if(date===null)return;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){toast('日付は YYYY-MM-DD 形式で入力してね');return}
+ t.title=title.trim();t.minutes=Math.max(5,Number(mins)||t.minutes);t.date=date;save();toast('予定を更新したよ');
+}
+function taskHTML(t){return `<div class="task ${t.done?'done':''}"><button class="check" aria-label="完了切り替え" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</button><div class="task-main"><div class="task-title">${esc(t.title)}</div><div class="task-meta">${esc(t.subject||'勉強')} · ${t.minutes}分 · ${esc(t.date)}</div></div><button class="task-edit" aria-label="編集" onclick="editTask('${t.id}')">⋯</button></div>`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ const today=todayKey(),tasks=state.tasks||[],todays=tasks.filter(t=>t.date===today),done=todays.filter(t=>t.done),totalM=todays.filter(t=>t.done).reduce((s,t)=>s+(+t.minutes||0),0),pct=todays.length?done.length/todays.length*100:0;
+ $('todayDate').textContent=new Date().toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',weekday:'short'});
+ $('todayCount').textContent=`${done.length} / ${todays.length}`;$('todayTime').innerHTML=`${totalM}<span style="font-size:13px"> 分</span>`;$('progressBar').style.width=pct+'%';
+ $('todayTasks').innerHTML=todays.length?todays.map(taskHTML).join(''):'<div class="empty">今日の予定はまだないよ。<br>プランを作るか、タスクを追加してみてね ✦</div>';
+ const completed=tasks.filter(t=>t.done).length,allPct=tasks.length?completed/tasks.length*100:0;
+ $('planSubject').textContent=state.subject||'まだプランがありません';$('planGoal').textContent=state.goal||'まずは目標を決めよう。';$('planProgress').style.width=allPct+'%';$('planStats').textContent=tasks.length?`${completed} / ${tasks.length} タスク完了 · 達成率 ${Math.round(allPct)}%`:'プランを作ると、ここに進捗が表示されます。';
+ $('planSubtitle').textContent=tasks.length?`${tasks.length} TASKS`:'MY PLAN';$('allTasks').innerHTML=tasks.length?[...tasks].sort((a,b)=>a.date.localeCompare(b.date)).map(taskHTML).join(''):'<div class="empty">まだ予定がないよ。<br>「プラン作成」から始めよう ♡</div>';
+ $('greeting').textContent=state.nickname?`${state.nickname}のペースで、大丈夫。`:'自分のペースで、大丈夫。';
+ if(state.accent==='pink'){document.documentElement.style.setProperty('--lav','#f3afcb');document.documentElement.style.setProperty('--pink','#c8b5ff')}else if(state.accent==='blue'){document.documentElement.style.setProperty('--lav','#a9c8ff');document.documentElement.style.setProperty('--pink','#c8b5ff')}else{document.documentElement.style.setProperty('--lav','#c8b5ff');document.documentElement.style.setProperty('--pink','#f3afcb')}
+}
+function saveSettings(){state.nickname=$('nickname').value.trim();state.accent=$('accent').value;save();toast('設定を保存したよ ✦')}
+$('nickname').value=state.nickname||'';$('accent').value=state.accent||'lavender';
+render();
+</script>
+</body>
+</html>
